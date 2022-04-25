@@ -149,7 +149,7 @@ pgpool_connection_cache: 'off'
 pgpool_reset_query_list: ABORT; DISCARD ALL
 
 # REPLICATION MODE
-pgpool_replication_mode: 'off'
+pgpool_backend_clustering_mode: 'raw'
 pgpool_replicate_select: 'off'
 pgpool_insert_lock: 'on'
 pgpool_lobj_lock_table: ''
@@ -160,9 +160,8 @@ pgpool_failover_if_affected_tuples_mismatch: 'off'
 # LOAD BALANCING MODE
 pgpool_load_balance_mode: 'off'
 pgpool_ignore_leading_white_space: 'on'
-pgpool_white_function_list: ''
-pgpool_black_function_list: currval,lastval,nextval,setval
-pgpool_black_query_pattern_list: ''
+pgpool_read_only_function_list: ''
+pgpool_write_function_list: currval,lastval,nextval,setval
 pgpool_database_redirect_preference_list: ''
 pgpool_app_name_redirect_preference_list: ''
 pgpool_allow_sql_comments: 'off'
@@ -170,24 +169,24 @@ pgpool_disable_load_balance_on_write: 'transaction' # one of 'transaction', 'tra
 pgpool_statement_level_load_balance: 'off'
 
 # MASTER/SLAVE MODE (alias pgpool running mode) 
-pgpool_master_slave_mode: 'on'
-pgpool_master_slave_sub_mode: stream
+pgpool_backend_clustering_mode: 'streaming_replication'
+pgpool_backend_clustering_mode: streaming_replication
 # Streaming
 pgpool_sr_check_period: 10
-pgpool_sr_check_user: 'nobody'
-pgpool_sr_check_password: ''
-pgpool_sr_check_database: ''
+pgpool_sr_check_user: 'admin'
+pgpool_sr_check_password: 'secret'
+pgpool_sr_check_database: 'testdb'
 pgpool_delay_threshold: 10000000
 # Special commands
 pgpool_follow_master_template: scripts/follow_master.repmgr.sh.j2
-pgpool_follow_master_command: 
+pgpool_follow_primary_command: 
 
 # HEALTH CHECK GLOBAL PARAMETERS
 pgpool_health_check_period: 0
 pgpool_health_check_timeout: 20
-pgpool_health_check_user: nobody
-pgpool_health_check_password: ''
-pgpool_health_check_database: ''
+pgpool_health_check_user: admin
+pgpool_health_check_password: 'secret'
+pgpool_health_check_database: 'testdb'
 pgpool_health_check_max_retries: 0
 pgpool_health_check_retry_delay: 1
 pgpool_connect_timeout: 10000
@@ -222,7 +221,7 @@ pgpool_use_watchdog: 'off'
 pgpool_trusted_servers: ''
 ppgool_ping_path: '' # Varies with OS. Defined in vars/
 # Watchdog communication Settings
-pgpool_wd_hostname: ''
+pgpool_hostname: ''
 pgpool_wd_port: 9000
 pgpool_wd_priority: 1
 pgpool_authkey: ''
@@ -240,9 +239,10 @@ pgpool_wd_escalation_command: ''
 pgpool_wd_de_escalation_command: ''
 # Watchdog consensus settings for failover
 pgpool_failover_when_quorum_exists: 'on'
-pgpool_failover_require_consensus: 'on'
+pgpool_failover_require_consensus: 'off'
 pgpool_allow_multiple_failover_requests_from_node: 'off'
-pgpool_enable_consensus_with_half_votes: 'off'
+# with only 2 DCs this is very important
+pgpool_enable_consensus_with_half_votes: 'on'
 # Lifecheck Setting
 # common
 pgpool_wd_monitoring_interfaces_list: ''
@@ -260,9 +260,9 @@ pgpool_heartbeat_destination: []
 # query mode
 pgpool_wd_life_point: 3
 pgpool_wd_lifecheck_query: SELECT 1
-pgpool_wd_lifecheck_dbname: template1
-pgpool_wd_lifecheck_user: nobody
-pgpool_wd_lifecheck_password: ''
+pgpool_wd_lifecheck_dbname: testdb
+pgpool_wd_lifecheck_user: admin
+pgpool_wd_lifecheck_password: 'secret'
 # Other pgpool Connection Settings
 pgpool_other_settings: []
 # pgpool_other_settings: 
@@ -276,7 +276,7 @@ pgpool_relcache_size: 256
 pgpool_check_temp_table: catalog
 pgpool_check_unlogged_table: 'on'
 pgpool_enable_shared_relcache: 'on'
-pgpool_relcache_query_target: master
+pgpool_relcache_query_target: primary
 
 # IN MEMORY QUERY MEMORY CACHE
 pgpool_in_memory_query_cache: 'off'
@@ -290,5 +290,3 @@ pgpool_memqcache_auto_cache_invalidation: 'on'
 pgpool_memqcache_maxcache: 409600
 pgpool_memqcache_cache_block_size: 1048576
 pgpool_memqcache_oiddir: /var/log/pgpool/oiddir
-pgpool_white_memqcache_table_list: ''
-pgpool_black_memqcache_table_list: ''

@@ -1,4 +1,8 @@
 ---
+- name: Set timezone to Australia/Sydney
+  community.general.timezone:
+    name: Australia/Sydney
+
 - name: Configure | Generated hashed passwords for Ansible
   set_fact: 
     pgpool_password_hashed: "{{ pgpool_password_cleartext | password_hash('sha512') }}"
@@ -56,6 +60,15 @@
   template:
     src: pgpool.conf.j2
     dest: "{{ pgpool_home_directory }}/pgpool.conf"
+    owner: "{{ pgpool_user }}"
+    group: "{{ pgpool_group }}"
+    mode: 0775
+  notify: reload pgpool2
+
+- name: Configure | Upload pgpool_node_id
+  template:
+    src: pgpool_node_id.j2
+    dest: "{{ pgpool_home_directory }}/pgpool_node_id"
     owner: "{{ pgpool_user }}"
     group: "{{ pgpool_group }}"
     mode: 0775

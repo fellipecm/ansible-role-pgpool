@@ -1,41 +1,134 @@
 ---
+all:
+  vars:
+    ansible_user: 'vagrant'
+    network_interface: 'enp0s8'
 pgpool:
   hosts:
+    # Fake DC 1
     pgpool01:
-      ansible_host: 192.168.56.10
-      pgpool_wd_hostname: pgsql01
+      ansible_host: 192.168.1.171
+      ansible_ssh_private_key_file: '/home/fellipecm/code/github/forks/ansible-role-postgresql-ha/.vagrant/machines/pgsql01/virtualbox/private_key'
+      pgpool_hostname: pgsql01
       pgpool_wd_priority: 1
+      pgpool_node_id: 0
       # watchdog
       pgpool_heartbeat_destination:
         - hostname: pgsql02
         - hostname: pgsql03
-      pgpool_other_settings: 
+        - hostname: pgsql04
+        # - hostname: pgsql05
+        # - hostname: pgsql06
+      pgpool_other_settings:
+        - hostname: pgsql01
         - hostname: pgsql02
         - hostname: pgsql03
+        - hostname: pgsql04
+        # - hostname: pgsql05
+        # - hostname: pgsql06
     pgpool02:
-      ansible_host: 192.168.56.11
-      pgpool_wd_hostname: pgsql02
-      pgpool_wd_priority: 2
-      # watchdog
-      pgpool_heartbeat_destination:
-        - hostname: pgsql01
-        - hostname: pgsql03
-      pgpool_other_settings: 
-        - hostname: pgsql01
-        - hostname: pgsql03
-    pgpool03:
-      ansible_host: 192.168.56.12
-      pgpool_wd_hostname: pgsql03
+      ansible_host: 192.168.1.172
+      ansible_ssh_private_key_file: '/home/fellipecm/code/github/forks/ansible-role-postgresql-ha/.vagrant/machines/pgsql02/virtualbox/private_key'
+      pgpool_hostname: pgsql02
       pgpool_wd_priority: 3
+      pgpool_node_id: 1
+      # watchdog
+      pgpool_heartbeat_destination:
+        - hostname: pgsql01
+        - hostname: pgsql03
+        - hostname: pgsql04
+        # - hostname: pgsql05
+        # - hostname: pgsql06
+      pgpool_other_settings: 
+        - hostname: pgsql01
+        - hostname: pgsql02
+        - hostname: pgsql03
+        - hostname: pgsql04
+        # - hostname: pgsql05
+        # - hostname: pgsql06
+    # Fake DC 2
+    pgpool03:
+      ansible_host: 192.168.1.173
+      ansible_ssh_private_key_file: '/home/fellipecm/code/github/forks/ansible-role-postgresql-ha/.vagrant/machines/pgsql03/virtualbox/private_key'
+      pgpool_hostname: pgsql03
+      pgpool_wd_priority: 5
+      pgpool_node_id: 2
       # watchdog
       pgpool_heartbeat_destination:
         - hostname: pgsql01
         - hostname: pgsql02
+        - hostname: pgsql04
+        # - hostname: pgsql05
+        # - hostname: pgsql06
       pgpool_other_settings: 
         - hostname: pgsql01
         - hostname: pgsql02
+        - hostname: pgsql03
+        - hostname: pgsql04
+        # - hostname: pgsql05
+        # - hostname: pgsql06
+    pgpool04:
+      ansible_host: 192.168.1.174
+      ansible_ssh_private_key_file: '/home/fellipecm/code/github/forks/ansible-role-postgresql-ha/.vagrant/machines/pgsql04/virtualbox/private_key'
+      pgpool_hostname: pgsql04
+      pgpool_wd_priority: 2
+      pgpool_node_id: 3
+      # watchdog
+      pgpool_heartbeat_destination:
+        - hostname: pgsql01
+        - hostname: pgsql02
+        - hostname: pgsql03
+        - hostname: pgsql05
+        - hostname: pgsql06
+      pgpool_other_settings: 
+        - hostname: pgsql01
+        - hostname: pgsql02
+        - hostname: pgsql03
+        - hostname: pgsql04
+        # - hostname: pgsql05
+        # - hostname: pgsql06
+    # pgpool05:
+    #   ansible_host: 192.168.1.175
+    #   ansible_ssh_private_key_file: '/home/fellipecm/code/github/forks/ansible-role-postgresql-ha/.vagrant/machines/pgsql05/virtualbox/private_key'
+    #   pgpool_hostname: pgsql05
+    #   pgpool_wd_priority: 4
+    #   pgpool_node_id: 4
+    #   # watchdog
+    #   pgpool_heartbeat_destination:
+    #     - hostname: pgsql01
+    #     - hostname: pgsql02
+    #     - hostname: pgsql03
+    #     - hostname: pgsql04
+    #     - hostname: pgsql06
+    #   pgpool_other_settings: 
+    #     - hostname: pgsql01
+    #     - hostname: pgsql02
+    #     - hostname: pgsql03
+    #     - hostname: pgsql04
+    #     - hostname: pgsql05
+    #     - hostname: pgsql06
+    # pgpool06:
+    #   ansible_host: 192.168.1.176
+    #   ansible_ssh_private_key_file: '/home/fellipecm/code/github/forks/ansible-role-postgresql-ha/.vagrant/machines/pgsql06/virtualbox/private_key'
+    #   pgpool_hostname: pgsql06
+    #   pgpool_wd_priority: 6
+    #   pgpool_node_id: 5
+    #   # watchdog
+    #   pgpool_heartbeat_destination:
+    #     - hostname: pgsql01
+    #     - hostname: pgsql02
+    #     - hostname: pgsql03
+    #     - hostname: pgsql04
+    #     - hostname: pgsql05
+    #   pgpool_other_settings: 
+    #     - hostname: pgsql01
+    #     - hostname: pgsql02
+    #     - hostname: pgsql03
+    #     - hostname: pgsql04
+    #     - hostname: pgsql05
+    #     - hostname: pgsql06
   vars:
-    pgpool_postgresql_version: 12
+    pgpool_postgresql_version: 13
     # .pcpass file
     pgpool_pcppass_entries: 
       - hostname: pgsql01
@@ -50,6 +143,18 @@ pgpool:
         port: 9898
         user: pgpool
         password: pgpool
+      - hostname: pgsql04
+        port: 9898
+        user: pgpool
+        password: pgpool
+      - hostname: pgsql05
+        port: 9898
+        user: pgpool
+        password: pgpool
+      - hostname: pgsql06
+        port: 9898
+        user: pgpool
+        password: pgpool
       - hostname: "{{ pgpool_pcp_socket_dir }}" # allows using -h /var/run/pcp instead of 'localhost' 
         port: 9898
         user: pgpool
@@ -61,6 +166,8 @@ pgpool:
     # pool_passwd
     pgpool_passwd_users_md5: 
       - username: admin
+        password: secret
+      - username: jirauser
         password: secret
     # backend settings
     pgpool_backend_servers:
@@ -82,13 +189,36 @@ pgpool:
         data_directory: "{{ pgpool_postgresql_data_directory }}"
         flag: ALLOW_TO_FAILOVER
         application_name: pgsql03
+      - hostname: pgsql04
+        port: 5432
+        weight: 1
+        data_directory: "{{ pgpool_postgresql_data_directory }}"
+        flag: ALLOW_TO_FAILOVER
+        application_name: pgsql04
+      # - hostname: pgsql05
+      #   port: 5432
+      #   weight: 1
+      #   data_directory: "{{ pgpool_postgresql_data_directory }}"
+      #   flag: ALLOW_TO_FAILOVER
+      #   application_name: pgsql05
+      # - hostname: pgsql06
+      #   port: 5432
+      #   weight: 1
+      #   data_directory: "{{ pgpool_postgresql_data_directory }}"
+      #   flag: ALLOW_TO_FAILOVER
+      #   application_name: pgsql06
     # authentication 
     pgpool_enable_pool_hba: on
     pgpool_pool_hba_entries:
       - type: host
         database: all
         user: admin
-        address: 192.168.56.0/24
+        address: 192.168.1.100/24
+        method: trust
+      - type: host
+        database: jiradb
+        user: jirauser
+        address: 192.168.1.100/24
         method: trust
     # logs
     pgpool_log_hostname: 'on'
@@ -111,30 +241,30 @@ pgpool:
     pgpool_disable_load_balance_on_write: 'transaction' # one of 'transaction', 'trans_transaction' or 'always'
     pgpool_statement_level_load_balance: 'on'
     # running mode
-    pgpool_sr_check_user: repmgr
-    pgpool_sr_check_database: repmgr
-    pgpool_follow_master_command: "{{ pgpool_home_directory }}/follow_master.sh %d %h %p %D %m %H %M %P %r %R %N %S"
+    pgpool_sr_check_user: admin
+    pgpool_sr_check_database: testdb
+    pgpool_follow_primary_command: "{{ pgpool_home_directory }}/follow_master.sh %d %h %p %D %m %H %M %P %r %R %N %S"
     # HEALTH CHECK GLOBAL PARAMETERS
     pgpool_health_check_period: 10
     pgpool_health_check_timeout: 20
-    pgpool_health_check_user: repmgr
-    pgpool_health_check_database: repmgr
+    pgpool_health_check_user: admin
+    pgpool_health_check_database: testdb
     pgpool_health_check_max_retries: 3
     pgpool_health_check_retry_delay: 10
     pgpool_connect_timeout: 10000
     # FAILOVER AND FAILBACK
     pgpool_failover_command: "{{ pgpool_home_directory }}/failover.sh %d %h %p %D %m %H %M %P %r %R %N %S"
-    pgpool_failover_on_backend_error: 'off'
+    pgpool_failover_on_backend_error: 'on'
     pgpool_auto_failback: 'on'
     # Watchdog
-    pgpool_delegate_IP: 192.168.56.30
+    pgpool_delegate_IP: 192.168.1.190
     pgpool_use_watchdog: 'on'
-    pgpool_if_up_cmd: /usr/bin/sudo {{ pgpool_if_cmd_path }}/ip addr add $_IP_$/24 dev eth1 label eth1:0
-    pgpool_if_down_cmd: /usr/bin/sudo {{ pgpool_if_cmd_path }}/ip addr del $_IP_$/24 dev eth1
-    pgpool_arping_cmd: /usr/bin/sudo {{ pgpool_arping_path }}/arping -U $_IP_$ -w 1 -I eth1
+    pgpool_if_up_cmd: /usr/bin/sudo ip addr add {{pgpool_delegate_IP}}/24 dev {{network_interface}} label {{network_interface}}:0
+    pgpool_if_down_cmd: /usr/bin/sudo ip addr del {{pgpool_delegate_IP}}/24 dev {{network_interface}}
+    pgpool_arping_cmd: /usr/bin/sudo arping -U {{pgpool_delegate_IP}} -w 1 -I {{network_interface}}
     # Online Recovery
-    pgpool_recovery_user: postgres
-    pgpool_recovery_password: ''
+    pgpool_recovery_user: repmgr
+    pgpool_recovery_password: 'repmgr'
     pgpool_recovery_1st_stage_command: recovery_1st_stage.sh
     pgpool_recovery_2nd_stage_command: ''
     pgpool_recovery_timeout: 90

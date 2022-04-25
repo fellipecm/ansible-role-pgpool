@@ -76,7 +76,7 @@ backend_data_directory0 = '/var/lib/pgsql/data'
 backend_flag0 = 'ALLOW_TO_FAILOVER'
                                    # Controls various backend behavior
                                    # ALLOW_TO_FAILOVER, DISALLOW_TO_FAILOVER
-                                   # or ALWAYS_MASTER
+                                   # or ALWAYS_PRIMARY
 backend_application_name0 = 'server0'
                                    # walsender's application_name, used for "show pool_nodes" command
 #backend_hostname1 = 'host2'
@@ -269,7 +269,7 @@ reset_query_list = 'ABORT; DISCARD ALL'
 # REPLICATION MODE
 #------------------------------------------------------------------------------
 
-replication_mode = off
+backend_clustering_mode = raw
                                    # Activate replication mode
                                    # (change requires restart)
 replicate_select = off
@@ -314,20 +314,14 @@ load_balance_mode = off
                                    # (change requires restart)
 ignore_leading_white_space = on
                                    # Ignore leading white spaces of each query
-white_function_list = ''
+read_only_function_list = ''
                                    # Comma separated list of function names
                                    # that don't write to database
                                    # Regexp are accepted
-black_function_list = 'currval,lastval,nextval,setval'
+write_function_list = 'currval,lastval,nextval,setval'
                                    # Comma separated list of function names
                                    # that write to database
                                    # Regexp are accepted
-
-black_query_pattern_list = ''
-                                   # Semicolon separated list of query patterns
-                                   # that should be sent to primary node
-                                   # Regexp are accepted
-                                   # valid for streaming replicaton mode only.
 
 database_redirect_preference_list = ''
                                    # comma separated list of pairs of database and node id.
@@ -364,10 +358,10 @@ statement_level_load_balance = off
 # MASTER/SLAVE MODE
 #------------------------------------------------------------------------------
 
-master_slave_mode = off
+backend_clustering_mode = raw
                                    # Activate master/slave mode
                                    # (change requires restart)
-master_slave_sub_mode = 'stream'
+backend_clustering_mode = 'stream'
                                    # Master/slave sub mode
                                    # Valid values are combinations stream, slony
                                    # or logical. Default is stream.
@@ -398,7 +392,7 @@ delay_threshold = 0
 
 # - Special commands -
 
-follow_master_command = ''
+follow_primary_command = ''
                                    # Executes this command after master failover
                                    # Special values:
                                    #   %d = failed node id
@@ -570,10 +564,10 @@ ping_path = '/bin'
 
 # - Watchdog communication Settings -
 
-wd_hostname = ''
+hostname0 = ''
                                     # Host name or IP address of this watchdog
                                     # (change requires restart)
-wd_port = 9000
+wd_port0 = 9000
                                     # port number for watchdog service
                                     # (change requires restart)
 wd_priority = 1
@@ -679,7 +673,7 @@ wd_interval = 10
 
 # -- heartbeat mode --
 
-wd_heartbeat_port = 9694
+heartbeat_port0 = 9694
                                     # Port number for receiving heartbeat signal
                                     # (change requires restart)
 wd_heartbeat_keepalive = 2
@@ -688,14 +682,14 @@ wd_heartbeat_keepalive = 2
 wd_heartbeat_deadtime = 30
                                     # Deadtime interval for heartbeat signal (sec)
                                     # (change requires restart)
-heartbeat_destination0 = 'host0_ip1'
+heartbeat_hostname0 = 'host0_ip1'
                                     # Host name or IP address of destination 0
                                     # for sending heartbeat signal.
                                     # (change requires restart)
-heartbeat_destination_port0 = 9694 
+heartbeat_port0 = 9694 
                                     # Port number of destination 0 for sending
                                     # heartbeat signal. Usually this is the
-                                    # same as wd_heartbeat_port.
+                                    # same as heartbeat_port0.
                                     # (change requires restart)
 heartbeat_device0 = ''
                                     # Name of NIC device (such like 'eth0')
@@ -731,7 +725,7 @@ wd_lifecheck_password = ''
 
 # - Other pgpool Connection Settings -
 
-#other_pgpool_hostname0 = 'host0'
+#other_pgpool_hostname = 'host0'
                                     # Host name or IP address to connect to for other pgpool 0
                                     # (change requires restart)
 #other_pgpool_port0 = 5432
@@ -787,7 +781,7 @@ enable_shared_relcache = on
                                    # Default is on.
                                    # (change requires restart)
 
-relcache_query_target = master     # Target node to send relcache queries. Default is master (primary) node.
+relcache_query_target = primary     # Target node to send relcache queries. Default is master (primary) node.
                                    # If load_balance_node is specified, queries will be sent to load balance node.
 #------------------------------------------------------------------------------
 # IN MEMORY QUERY MEMORY CACHE

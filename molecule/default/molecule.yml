@@ -52,7 +52,7 @@ provisioner:
         # repmgr
         repmgr_node_id: 1
         # pgpool
-        pgpool_wd_hostname: pgsql01
+        pgpool_hostname: pgsql01
         pgpool_wd_priority: 1
         # watchdog
         pgpool_heartbeat_destination:
@@ -64,7 +64,7 @@ provisioner:
         ansible_host: 192.168.30.11
         # repmgr
         repmgr_node_id: 2
-        pgpool_wd_hostname: pgsql02
+        pgpool_hostname: pgsql02
         pgpool_wd_priority: 2
         # watchdog
         pgpool_heartbeat_destination:

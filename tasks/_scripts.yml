@@ -15,7 +15,7 @@
     owner: "{{ pgpool_user }}"
     group: "{{ pgpool_group }}"
     mode: 0775
-  when: pgpool_follow_master_command is defined and pgpool_follow_master_command
+  when: pgpool_follow_primary_command is defined and pgpool_follow_primary_command
 
 - name: Scripts | Copy recovery script
   template:
